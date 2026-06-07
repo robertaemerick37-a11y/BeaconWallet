@@ -6,9 +6,9 @@ const nodemailer = require('nodemailer');
 const app = express();
 app.use(express.json());
 
-// 🔌 Securely connected to your persistent Supabase Database Cloud via the Transaction Pooler
+// Connect securely to your persistent Supabase Database Cloud via the Transaction Pooler
 const pool = new Pool({
-  connectionString: "postgresql://postgres.aljlksrpeckvdhqofoqm:Ayo*214s%40mine@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
+  connectionString: "postgresql://postgres.aljlksrpeckvdhqofoqm:Ayo%2A214s%40mine@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
   ssl: { rejectUnauthorized: false }
 });
 
