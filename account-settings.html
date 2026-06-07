@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings - Beacon Wealth</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <!-- Main Persistent Header -->
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <a href="dashboard.html" class="logo-link"><h1>💳 Beacon Wealth</h1></a>
+      </div>
+
+      
+      <div class="profile-container">
+        <div class="profile-trigger" id="profile-trigger">
+          <span class="avatar">👤</span>
+          <span class="username">User</span>
+          <span class="arrow">▼</span>
+        </div>
+
+        <div class="profile-dropdown hidden" id="profile-dropdown">
+          <a href="account-settings.html" class="dropdown-item">Account Settings</a>
+          <a href="withdraw.html" class="dropdown-item">Withdraw</a>
+          <hr>
+          <a href="index.html" class="dropdown-item logout">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="withdraw-content">
+    <div class="withdraw-container">
+      <div class="page-header">
+        <h1>Account Settings</h1>
+        <p class="withdraw-subtitle">Manage your account information</p>
+      </div>
+
+      <div class="withdraw-card settings-card">
+        <div class="settings-section">
+          <h2 class="section-title">Account Information</h2>
+          
+          <!-- Username -->
+          <div class="setting-item">
+            <label>Username</label>
+            <div class="setting-display">
+              <span id="display-username">Loading...</span>
+              <button class="edit-btn" disabled>Edit</button>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="setting-item">
+            <label>Email Address</label>
+            <div class="setting-display">
+              <span id="display-email">Loading...</span>
+              <button class="edit-btn" id="change-email-btn">Change</button>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="setting-item">
+            <label>Password</label>
+            <div class="setting-display">
+              <div class="password-field">
+                <input type="password" id="display-password" value="" disabled>
+                <button type="button" class="toggle-password-btn" id="toggle-password-btn">Show</button>
+              </div>
+              <button class="edit-btn" id="change-password-btn">Change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Email Modal -->
+    <div id="change-email-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-card">
+        <h3>Change Email Address</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Enter your current password and new email</p>
+        
+        <div id="email-modal-error" class="error-message hidden"></div>
+        
+        <form id="change-email-form">
+          <div class="input-group">
+            <label for="email-password">Current Password</label>
+            <input type="password" id="email-password" required>
+          </div>
+
+          <div class="input-group">
+            <label for="new-email">New Email Address</label>
+            <input type="email" id="new-email" required>
+          </div>
+          
+          <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="button" id="email-modal-cancel" class="modal-cancel-btn">Cancel</button>
+            <button type="submit" class="submit-btn">Update Email</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-card">
+        <h3>Change Password</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Enter your current and new password</p>
+        
+        <div id="password-modal-error" class="error-message hidden"></div>
+        
+        <form id="change-password-form">
+          <div class="input-group">
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" required>
+          </div>
+
+          <div class="input-group">
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" required>
+          </div>
+
+          <div class="input-group">
+            <label for="confirm-new-password">Confirm New Password</label>
+            <input type="password" id="confirm-new-password" required>
+          </div>
+          
+          <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="button" id="password-modal-cancel" class="modal-cancel-btn">Cancel</button>
+            <button type="submit" class="submit-btn">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="account-settings.js"></script>
+
+  <!-- Site footer with legal links -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <span>&middot;</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

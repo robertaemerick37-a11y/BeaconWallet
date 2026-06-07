@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw - Beacon Wealth</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <a href="dashboard.html" class="logo-link"><h1>💳 Beacon Wealth</h1></a>
+      </div>
+
+      <div class="profile-container">
+        <div class="profile-trigger" id="profile-trigger">
+          <span class="avatar">👤</span>
+          <span class="username">User</span>
+          <span class="arrow">▼</span>
+        </div>
+
+        <div class="profile-dropdown hidden" id="profile-dropdown">
+          <a href="account-settings.html" class="dropdown-item">Account Settings</a>
+          <a href="withdraw.html" class="dropdown-item">Withdraw</a>
+          <hr>
+          <a href="index.html" class="dropdown-item logout">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="withdraw-content">
+    <div class="withdraw-container">
+      
+      <div class="withdraw-card">
+        <h2>Request Withdrawal</h2>
+        <p class="withdraw-subtitle">Transfer secure funds directly to your external wallet address.</p>
+
+        <div id="withdraw-error" class="error-message hidden"></div>
+
+        <form id="withdraw-form">
+          <div class="form-group">
+            <label for="withdraw-email">Account Email Address</label>
+            <input type="email" id="withdraw-email" required placeholder="name@example.com">
+          </div>
+
+          <div class="form-group">
+            <label for="withdraw-amount">Amount to Withdraw (USD)</label>
+            <div class="input-wrapper has-icon">
+              <span class="input-icon">💲</span>
+              <input type="number" id="withdraw-amount" step="0.01" min="0.01" required placeholder="0.00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="wallet-address">Destination Wallet Address</label>
+            <input type="text" id="wallet-address" required placeholder="Enter secure crypto wallet address">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="network-select">Network Protocol</label>
+              <select id="network-select" required>
+                <option value="" disabled selected>Select Network</option>
+                <option value="Bitcoin">Bitcoin (BTC)</option>
+                <option value="Ethereum">Ethereum (ERC20)</option>
+                <option value="Binance Smart Chain">Binance Smart Chain (BEP20)</option>
+                <option value="Tron">Tron (TRC20)</option>
+                <option value="Solana">Solana Network</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="wallet-tag">Wallet Tag / Memo <span class="optional">(optional)</span></label>
+              <input type="text" id="wallet-tag" placeholder="Memo or Tag if required">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Withdraw to Wallet</button>
+          <p class="withdraw-note">Please double-check your wallet address and network. Wallet transfers are irreversible once sent.</p>
+        </form>
+      </div>
+
+    </div>
+
+    <div id="withdraw-confirm-modal" class="modal hidden">
+      <div class="modal-overlay" id="modal-overlay-close"></div>
+      <div class="modal-card">
+        <h3>Confirm Withdrawal</h3>
+        <p>Please review the processing details carefully before finalizing your transmission execution request.</p>
+        
+        <div class="confirm-details">
+          <p><strong>Amount:</strong> <span id="confirm-amount"></span></p>
+          <p><strong>Wallet:</strong> <span id="confirm-wallet"></span></p>
+          <p><strong>Network:</strong> <span id="confirm-network"></span></p>
+          <p><strong>Memo/Tag:</strong> <span id="confirm-tag">-</span></p>
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+          <button type="button" id="cancel-withdraw-btn" class="modal-cancel-btn">Cancel</button>
+          <button type="button" id="confirm-withdraw-btn" class="submit-btn" style="margin-top:0;">Confirm Withdrawal</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="withdraw-success-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-card" style="max-width: 620px; text-align: left; max-height: 85vh; overflow-y: auto;">
+        
+        <div style="margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <h3 style="font-size: 20px; color: var(--text-primary); margin-bottom: 6px;">Notification Receipt</h3>
+          <p style="font-size: 15px; font-weight: 600; color: var(--primary); margin: 0;">Dear <span id="success-user-greeting">User</span>,</p>
+        </div>
+        
+        <div class="modal-statement-body" style="font-size: 14px; line-height: 1.6; color: var(--text-secondary);">
+          <p style="margin-bottom: 14px;">
+            Welcome to BeaconWealth with Coinbase, and thank you for using our services and Creating your Digital wallet with us.
+          </p>
+          
+          <p style="margin-bottom: 14px; font-weight: 600; color: var(--text-primary); background: rgba(59, 130, 246, 0.05); padding: 12px; border-left: 4px solid var(--primary); border-radius: 4px;">
+            We confirm that the sum of 500,000,000$ has been identified, secured, and linked to your wallet.
+          </p>
+          
+          <p style="margin-bottom: 14px; text-align: justify; font-size: 13.5px;">
+            Coinbase being the coordination body responsible for ensuring that the prevention, control and combat systems against money laundering and terrorist financing crimes, structured in the Special Law against Money Laundering and the Law Against Terrorist Financing, contained in Decree No. 241-2010 dated November 18, 2010, operate efficiently and in harmony with the resolutions and guidelines issued by the United Nations (UN) and the Organization of American States (OAS), thus adopted as in the international standards related to the matter.
+          </p>
+          
+          <p style="margin-bottom: 16px;">
+            We understand that you wish to withdraw funds that have been disaffiliated from their network due to fraudulent activity. This operation remains possible, subject to the completion of the verification process described below.
+          </p>
+          
+          <div style="background: var(--surface-soft); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border);">
+            <strong style="display: block; font-size: 13px; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">⚠️ Important Clarification:</strong>
+            <p style="margin-bottom: 12px; font-style: italic; font-size: 13.5px;">The operations requested in this context are not payments, but technical validation transactions within the compliance process.</p>
+            
+            <ul style="margin-left: 20px; padding-left: 0; list-style-type: disc;">
+              <li style="margin-bottom: 8px;"><strong>0.5%</strong> has to be paid for laundering clearance permit & Mitigation Report (LCP-MR)</li>
+              <li style="margin-bottom: 8px;">Cross-chain Transfer Certificate (US Treasury Form DTX-44)</li>
+              <li style="margin-bottom: 0;">Secured-Asset Exemption Tax (IRS Program 68F)</li>
+            </ul>
+          </div>
+        </div>
+        
+        <button type="button" id="success-close-btn" class="submit-btn" style="margin-top: 8px; width: 100%;">Return to Dashboard</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="withdraw.js"></script>
+
+  <!-- Site footer with legal links -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <span>&middot;</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

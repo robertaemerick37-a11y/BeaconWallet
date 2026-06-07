@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Wallet - Beacon Wealth</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <a href="dashboard.html" class="logo-link"><h1>💳 Beacon Wealth</h1></a>
+      </div>
+
+      <div class="header-right">
+        <div class="profile-container">
+          <div class="profile-trigger" id="profile-trigger">
+            <span class="avatar">👤</span>
+            <span class="username">User</span>
+            <span class="arrow">▼</span>
+          </div>
+
+          <div class="profile-dropdown hidden" id="profile-dropdown">
+            <a href="account-settings.html" class="dropdown-item">Account Settings</a>
+            <a href="withdraw.html" class="dropdown-item">Withdraw</a>
+            <hr>
+            <a href="index.html" class="dropdown-item logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="withdraw-content">
+    <div class="withdraw-container">
+      <div class="page-header">
+        <h2>Add Wallet</h2>
+        <p class="withdraw-subtitle">Save a new Binance wallet or payment destination for fast transfers.</p>
+      </div>
+
+      <div class="withdraw-card">
+        <div id="add-card-error" class="error-message hidden"></div>
+
+        <form id="add-card-form">
+          <div class="form-group">
+            <label for="card-label">Wallet Label</label>
+            <input type="text" id="card-label" placeholder="e.g. Binance Savings" required>
+          </div>
+
+          <div class="form-group">
+            <label for="card-wallet-address">Wallet Address</label>
+            <input type="text" id="card-wallet-address" placeholder="bnb1..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="card-network">Network</label>
+            <select id="card-network" required>
+              <option value="">-- Select Network --</option>
+              <option value="bep20">Binance Smart Chain (BEP20)</option>
+              <option value="erc20">Ethereum (ERC20)</option>
+              <option value="trc20">TRON (TRC20)</option>
+              <option value="bep2">Binance Chain (BEP2)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="card-note">Note <span class="optional">(optional)</span></label>
+            <input type="text" id="card-note" placeholder="Any label or memo notes">
+          </div>
+
+          <button type="submit" class="submit-btn">Add Wallet</button>
+          <p class="withdraw-note">Save your wallet details for faster withdrawals in the future.</p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="dashboard.js"></script>
+  <script src="add-card.js"></script>
+
+  <!-- Site footer with legal links -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <span>&middot;</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

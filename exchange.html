@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exchange - Beacon Wealth</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <a href="dashboard.html" class="logo-link"><h1>💳 Beacon Wealth</h1></a>
+      </div>
+
+      <div class="header-right">
+        <div class="profile-container">
+          <div class="profile-trigger" id="profile-trigger">
+            <span class="avatar">👤</span>
+            <span class="username">User</span>
+            <span class="arrow">▼</span>
+          </div>
+
+          <div class="profile-dropdown hidden" id="profile-dropdown">
+            <a href="account-settings.html" class="dropdown-item">Account Settings</a>
+            <a href="withdraw.html" class="dropdown-item">Withdraw</a>
+            <hr>
+            <a href="index.html" class="dropdown-item logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="withdraw-content">
+    <div class="withdraw-container">
+      <div class="page-header">
+        <h2>Exchange Funds</h2>
+        <p class="withdraw-subtitle">Swap assets instantly using Binance-style currency exchange.</p>
+      </div>
+
+      <div class="withdraw-card">
+        <div id="exchange-error" class="error-message hidden"></div>
+
+        <form id="exchange-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="exchange-from">From</label>
+              <select id="exchange-from" required>
+                <option value="">-- Select Currency --</option>
+                <option value="USDT">USDT</option>
+                <option value="BNB">BNB</option>
+                <option value="BTC">BTC</option>
+                <option value="ETH">ETH</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exchange-to">To</label>
+              <select id="exchange-to" required>
+                <option value="">-- Select Currency --</option>
+                <option value="USDT">USDT</option>
+                <option value="BNB">BNB</option>
+                <option value="BTC">BTC</option>
+                <option value="ETH">ETH</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="exchange-amount">Amount</label>
+            <div class="input-wrapper has-icon">
+              <span class="input-icon">💲</span>
+              <input type="number" id="exchange-amount" placeholder="0.00" min="1" step="0.01" required>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Create Exchange</button>
+          <p class="withdraw-note">Exchange rates are updated in real-time based on current market conditions.</p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="dashboard.js"></script>
+  <script src="exchange.js"></script>
+
+  <!-- Site footer with legal links -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <span>&middot;</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

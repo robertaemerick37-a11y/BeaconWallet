@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Account</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <header class="main-header auth-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <h1>💳 Beacon Wealth</h1>
+      </div>
+    </div>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2>Enter Verification Code</h2>
+      <p class="verification-subtext">We sent a 4-digit verification code to your email. Please enter it below.</p>
+      <p id="email-display" style="font-size: 13px; color: #0056b3; text-align: center; margin-bottom: 10px; font-weight: 500;"></p>
+      <p id="verify-timer" class="verification-timer">Code expires in 1 minute 45 seconds.</p>
+      <div id="resend-status" class="success-message hidden"></div>
+      <div id="error-message" class="error-message hidden"></div>
+
+      <form id="verify-form">
+        <!-- The 4 character slots -->
+        <div class="code-inputs">
+          <input type="text" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+          <input type="text" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+        </div>
+
+        <button type="submit" class="submit-btn"><span class="btn-label">Verify and Enter</span></button>
+      </form>
+
+      <div class="auth-toggle">
+        <p>Didn't get a code? <a href="#" id="resend-link">Resend Code</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="verify.js"></script>
+
+  <!-- Site footer with legal links -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <span>&middot;</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

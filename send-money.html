@@ -1,0 +1,97 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money - Beacon Wealth</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <a href="dashboard.html" class="logo-link"><h1>💳 Beacon Wealth</h1></a>
+      </div>
+
+      <div class="header-right">
+        <div class="profile-container">
+          <div class="profile-trigger" id="profile-trigger">
+            <span class="avatar">👤</span>
+            <span class="username">User</span>
+            <span class="arrow">▼</span>
+          </div>
+
+          <div class="profile-dropdown hidden" id="profile-dropdown">
+            <a href="account-settings.html" class="dropdown-item">Account Settings</a>
+            <a href="withdraw.html" class="dropdown-item">Withdraw</a>
+            <hr>
+            <a href="index.html" class="dropdown-item logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="withdraw-content">
+    <div class="withdraw-container">
+      <div class="page-header">
+        <h2>Send Money</h2>
+        <p class="withdraw-subtitle">Send funds securely to a Binance wallet address.</p>
+      </div>
+
+      <div class="withdraw-card">
+        <div id="send-error" class="error-message hidden"></div>
+
+        <form id="send-money-form">
+          <div class="form-group">
+            <label for="send-wallet-address">Recipient Wallet Address</label>
+            <input type="text" id="send-wallet-address" placeholder="bnb1..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="send-amount">Amount</label>
+            <div class="input-wrapper has-icon">
+              <span class="input-icon">💲</span>
+              <input type="number" id="send-amount" placeholder="0.00" min="1" step="0.01" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="send-network">Network</label>
+              <select id="send-network" required>
+                <option value="">-- Select Network --</option>
+                <option value="bep20">Binance Smart Chain (BEP20)</option>
+                <option value="erc20">Ethereum (ERC20)</option>
+                <option value="trc20">TRON (TRC20)</option>
+                <option value="bep2">Binance Chain (BEP2)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="send-memo">Memo / Tag <span class="optional">(optional)</span></label>
+              <input type="text" id="send-memo" placeholder="Memo or Tag if required">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Send Money</button>
+          <p class="withdraw-note">Please double-check the wallet address and network before sending.</p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="dashboard.js"></script>
+  <script src="send-money.js"></script>
+
+  <!-- Site footer with legal links -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <span>&middot;</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

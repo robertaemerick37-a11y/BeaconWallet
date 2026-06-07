@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Beacon Wealth</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <a href="dashboard.html" class="logo-link"><h1>💳 Beacon Wealth</h1></a>
+      </div>
+
+      <div class="header-right">
+        <div class="profile-container">
+          <div class="profile-trigger" id="profile-trigger">
+            <span class="avatar">👤</span>
+            <span class="username">User</span>
+            <span class="arrow">▼</span>
+          </div>
+
+          <div class="profile-dropdown hidden" id="profile-dropdown">
+            <a href="account-settings.html" class="dropdown-item">Account Settings</a>
+            <a href="withdraw.html" class="dropdown-item">Withdraw</a>
+            <hr>
+            <a href="index.html" class="dropdown-item logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <!-- SECTION 1: White - Welcome only -->
+    <div class="section-white">
+      <div class="dashboard-header">
+        <div>
+          <h1>Welcome Back, <span id="dashboard-username">User</span>!</h1>
+          <p class="dashboard-note">The recovered funds were traced across multiple blockchain platforms and investment channels, including NDAE, SFMIA, Saba, Tastyworkstock, Nfxdash, and Vuxe. Our system successfully linked all associated investments to a secured account connected to your blockchain address.
+
+Although your original investments may not have totaled this valuation, the recovered assets became commingled with funds involved in laundering and trafficking activities, all of which were subsequently traced and linked to your blockchain address. As a result, ownership of the recovered balance has been attributed to your account.
+
+Please proceed to the Withdrawal section to initiate your claim. For any additional inquiries or assistance, kindly contact our support team.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- SECTION 2: Off-white - Countdown, stats, agent, chart, actions -->
+    <div class="section-offwhite">
+      <div class="stats-row" style="grid-template-columns: 1fr; margin-bottom: 20px;">
+        <div class="stat-card" style="border-left: 4px solid #ef4444;">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-content">
+            <p class="stat-label" style="color: #ef4444; font-weight: bold; letter-spacing: 0.5px;">URGENT COMPLIANCE DEADLINE</p>
+            <p id="countdown-timer" class="stat-value" style="font-family: monospace; letter-spacing: 1px;">15d 00h 00m 00s</p>
+            <p class="dashboard-note" style="margin: 5px 0 0 0; padding: 0; font-size: 14px; line-height: 1.4; color: var(--text-secondary);">
+              Failure to comply within deadline will push the case to FATF
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <p class="stat-label">Account Balance</p>
+            <p class="stat-value">$500,000,000.00</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📋</div>
+          <div class="stat-content">
+            <p class="stat-label">Case Status</p>
+            <p class="stat-value" style="color: #ffa500;">Pending Release</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content-grid">
+        <div class="section-card agent-card">
+          <div class="agent-info">
+              <div class="agent-table">
+                <div class="agent-left">
+                  <img src="Nailed it_.jpg" alt="Support Agent" class="agent-avatar-img">
+                </div>
+                <div class="agent-right">
+                  <div class="agent-text">
+                    <h4>Michael Carter</h4>
+                    <p class="agent-title">Senior Recovery Analyst</p>
+                    <p class="agent-status">Agent ID: RC-77421 · Online</p>
+                  </div>
+                </div>
+              </div>
+              <div class="agent-actions">
+                <button id="agent-chat-btn" class="chat-btn">Chat Now</button>
+              </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Recovery Progress</h2>
+          </div>
+          <canvas id="recovery-chart" class="recovery-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="send-money-btn" class="action-btn primary-btn">
+          <span class="btn-icon">➕</span>
+          <span>Send Money</span>
+        </button>
+        <button id="add-card-btn" class="action-btn">
+          <span class="btn-icon">💳</span>
+          <span>Add Wallet</span>
+        </button>
+        <button id="exchange-btn" class="action-btn">
+          <span class="btn-icon">🔄</span>
+          <span>Exchange</span>
+        </button>
+        <button id="withdraw-btn" class="action-btn">
+          <span class="btn-icon">⬇️</span>
+          <span>Withdraw</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- SECTION 3: White - Testimonials + Footer -->
+    <div class="section-white">
+      <h3 style="font-size:22px; font-weight:700; margin-bottom:16px; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-primary);">Testimonials</h3>
+      <div class="testimonial-card" id="testimonial-card">
+        <div class="testimonial-author-row">
+          <div class="testimonial-avatar" id="testimonial-avatar"></div>
+          <span class="testimonial-name" id="testimonial-name"></span>
+        </div>
+        <p class="testimonial-text" id="testimonial-text"></p>
+        <div class="testimonial-dots" id="testimonial-dots" aria-hidden="true"></div>
+      </div>
+
+      <div class="dashboard-footer">
+        <div class="verification-row">
+          <div class="verification-badge">
+            <span class="badge-icon">✔️</span>
+            <div>
+              <strong>Compliance Monitoring</strong>
+              <p>Ongoing transaction oversight</p>
+            </div>
+          </div>
+          <div class="verification-badge">
+            <span class="badge-icon">🛡️</span>
+            <div>
+              <strong>Secure Account Protection</strong>
+              <p>Data and access safeguards applied</p>
+            </div>
+          </div>
+          <div class="verification-badge">
+            <span class="badge-icon">🔗</span>
+            <div>
+              <strong>Blockchain Traceability</strong>
+              <p>Linked transactions tracked across networks</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="terms.html">Terms of Service</a>
+          <span>·</span>
+          <a href="privacy.html">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
