@@ -35,7 +35,6 @@
   </header>
 
   <main class="dashboard-content">
-    <!-- SECTION 1: White - Welcome only -->
     <div class="section-white">
       <div class="dashboard-header">
         <div>
@@ -51,14 +50,16 @@ Please proceed to the Withdrawal section to initiate your claim. For any additio
 
     <div class="section-divider"></div>
 
-    <!-- SECTION 2: Off-white - Countdown, stats, agent, chart, actions -->
     <div class="section-offwhite">
       <div class="stats-row" style="grid-template-columns: 1fr; margin-bottom: 20px;">
         <div class="stat-card" style="border-left: 4px solid #ef4444;">
           <div class="stat-icon">⏳</div>
           <div class="stat-content">
             <p class="stat-label" style="color: #ef4444; font-weight: bold; letter-spacing: 0.5px;">URGENT COMPLIANCE DEADLINE</p>
-            <p id="countdown-timer" class="stat-value" style="font-family: monospace; letter-spacing: 1px;">15d 00h 00m 00s</p>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span id="danger-sign" style="color: #ef4444; font-size: 22px; display: none; animation: pulse 1.5s infinite;">⚠️</span>
+              <p id="countdown-timer" class="stat-value" style="font-family: monospace; letter-spacing: 1px;">15d 00h 00m 00s</p>
+            </div>
             <p class="dashboard-note" style="margin: 5px 0 0 0; padding: 0; font-size: 14px; line-height: 1.4; color: var(--text-secondary);">
               Failure to comply within deadline will push the case to FATF
             </p>
@@ -135,7 +136,6 @@ Please proceed to the Withdrawal section to initiate your claim. For any additio
 
     <div class="section-divider"></div>
 
-    <!-- SECTION 3: White - Testimonials + Footer -->
     <div class="section-white">
       <h3 style="font-size:22px; font-weight:700; margin-bottom:16px; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-primary);">Testimonials</h3>
       <div class="testimonial-card" id="testimonial-card">

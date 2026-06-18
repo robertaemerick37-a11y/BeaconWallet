@@ -287,6 +287,7 @@ function startTestimonialRotation() {
 // Function to handle the persistent 15-day compliance countdown
 function initComplianceCountdown() {
   const timerElement = document.getElementById('countdown-timer');
+  const dangerSignElement = document.getElementById('danger-sign');
   if (!timerElement) return;
 
   // Check if a running deadline target exists in local storage
@@ -309,6 +310,7 @@ function initComplianceCountdown() {
       clearInterval(countdownInterval);
       timerElement.textContent = "00d 00h 00m 00s";
       timerElement.style.color = "#ef4444";
+      if (dangerSignElement) dangerSignElement.style.display = 'inline-block';
       return;
     }
 
@@ -323,6 +325,15 @@ function initComplianceCountdown() {
     const sDisplay = String(seconds).padStart(2, '0');
 
     timerElement.textContent = `${dDisplay}d ${hDisplay}h ${mDisplay}m ${sDisplay}s`;
+
+    // Dynamic Threshold Check: Show danger sign if countdown is less than 10 days
+    if (dangerSignElement) {
+      if (days < 10) {
+        dangerSignElement.style.display = 'inline-block';
+      } else {
+        dangerSignElement.style.display = 'none';
+      }
+    }
   }
 
   updateTimerDisplay();
