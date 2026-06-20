@@ -71,8 +71,8 @@ function drawRecoveryChart() {
   canvas.height = 340;
 
   const padding = 40;
-  const leftPad = 85; // extra space on the left for y-axis number labels and rotated title
-  const bottomPad = 55; // extra space on the bottom for x-axis labels and title
+  const leftPad = 85; 
+  const bottomPad = 55; 
   const graphWidth = canvas.width - padding - leftPad;
   const graphHeight = canvas.height - padding - bottomPad;
   const graphLeft = leftPad;
@@ -150,7 +150,6 @@ function drawRecoveryChart() {
     ctx.fill();
   });
 
-  // X-axis: numeric day labels under each tick
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#475569';
   ctx.font = 'bold 11px "Segoe UI", sans-serif';
@@ -160,13 +159,11 @@ function drawRecoveryChart() {
     ctx.fillText(String(i + 1), x, graphBottom + 18);
   }
 
-  // X-axis title
   ctx.fillStyle = '#1d4ed8';
   ctx.font = 'bold 12px "Segoe UI", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('Day', graphLeft + graphWidth / 2, graphBottom + 38);
 
-  // Y-axis: numeric value labels
   ctx.fillStyle = '#475569';
   ctx.font = 'bold 11px "Segoe UI", sans-serif';
   ctx.textAlign = 'right';
@@ -177,7 +174,6 @@ function drawRecoveryChart() {
     ctx.fillText(label, graphLeft - 8, y + 4);
   }
 
-  // Y-axis title (rotated), placed further left to avoid clashing with the number labels
   ctx.save();
   ctx.translate(14, graphTop + graphHeight / 2);
   ctx.rotate(-Math.PI / 2);
@@ -203,7 +199,6 @@ const testimonials = [
 let activeTestimonial = 0;
 let testimonialTimer = null;
 
-// Render a testimonial avatar as an image when one is provided, otherwise show initials
 function setTestimonialAvatar(avatarEl, item) {
   if (item.image) {
     avatarEl.textContent = '';
@@ -228,7 +223,6 @@ function renderTestimonial(index) {
   setTimeout(() => {
     testimonialText.textContent = item.text;
     testimonialName.textContent = item.name;
-    // Update avatar with image (if provided) or initials
     const avatarEl = document.getElementById('testimonial-avatar');
     if (avatarEl) {
       setTestimonialAvatar(avatarEl, item);
@@ -270,7 +264,6 @@ function createDots() {
 
 function startTestimonialRotation() {
   if (!testimonials.length) return;
-  // Set initial avatar
   const avatarEl = document.getElementById('testimonial-avatar');
   if (avatarEl && testimonials[activeTestimonial]) {
     setTestimonialAvatar(avatarEl, testimonials[activeTestimonial]);
@@ -284,17 +277,19 @@ function startTestimonialRotation() {
   }, 5000);
 }
 
-// Function to handle the persistent 15-day compliance countdown
+// Function to handle the persistent 15-day compliance countdown with controlled alert play
 function initComplianceCountdown() {
   const timerElement = document.getElementById('countdown-timer');
   const dangerSignElement = document.getElementById('danger-sign');
+  const alarmElement = document.getElementById('alarm-sound');
   if (!timerElement) return;
 
-  // Check if a running deadline target exists in local storage
+  // Tracks whether the entry audio has triggered yet during this page load
+  let hasAlertedThisSession = false;
+
   let complianceDeadline = localStorage.getItem('compliance_deadline');
 
   if (!complianceDeadline) {
-    // Start a fresh 15-day window from this execution moment (first login)
     const fifteenDaysInMs = 15 * 24 * 60 * 60 * 1000;
     complianceDeadline = new Date().getTime() + fifteenDaysInMs;
     localStorage.setItem('compliance_deadline', complianceDeadline);
@@ -311,6 +306,7 @@ function initComplianceCountdown() {
       timerElement.textContent = "00d 00h 00m 00s";
       timerElement.style.color = "#ef4444";
       if (dangerSignElement) dangerSignElement.style.display = 'inline-block';
+      if (alarmElement && !alarmElement.paused) alarmElement.pause();
       return;
     }
 
@@ -326,12 +322,30 @@ function initComplianceCountdown() {
 
     timerElement.textContent = `${dDisplay}d ${hDisplay}h ${mDisplay}m ${sDisplay}s`;
 
-    // Dynamic Threshold Check: Show danger sign if countdown is less than 10 days
-    if (dangerSignElement) {
-      if (days < 10) {
-        dangerSignElement.style.display = 'inline-block';
-      } else {
-        dangerSignElement.style.display = 'none';
+    // Alert rules activate when remaining window context is under 10 days
+    if (days < 10) {
+      if (dangerSignElement) dangerSignElement.style.display = 'inline-block';
+      
+      // Fire single entry sound track instead of endless looping
+      if (alarmElement && !hasAlertedThisSession) {
+        hasAlertedThisSession = true;
+        alarmElement.loop = false; // Prevent long native looping mechanics
+        
+        alarmElement.play().then(() => {
+          // Hard cut off audio play execution after 4 seconds to maintain quality user experience
+          setTimeout(() => {
+            alarmElement.pause();
+            alarmElement.currentTime = 0;
+          }, 4000);
+        }).catch(error => {
+          console.log("Audio waiting for standard viewport interaction rules:", error);
+          hasAlertedThisSession = false; // Reset to retry if initial load blocked autoplay
+        });
+      }
+    } else {
+      if (dangerSignElement) dangerSignElement.style.display = 'none';
+      if (alarmElement && !alarmElement.paused) {
+        alarmElement.pause();
       }
     }
   }
@@ -340,7 +354,6 @@ function initComplianceCountdown() {
   const countdownInterval = setInterval(updateTimerDisplay, 1000);
 }
 
-// Testimonial prev/next navigation
 const testimonialPrev = document.getElementById('testimonial-prev');
 const testimonialNext = document.getElementById('testimonial-next');
 
@@ -355,73 +368,4 @@ if (testimonialPrev) {
 
 if (testimonialNext) {
   testimonialNext.addEventListener('click', () => {
-    activeTestimonial = (activeTestimonial + 1) % testimonials.length;
-    clearInterval(testimonialTimer);
-    renderTestimonial(activeTestimonial);
-    startTestimonialRotation();
-  });
-}
-
-// Initialize chart, action behaviors, testimonials, and countdown when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    drawRecoveryChart();
-    registerDashboardActions();
-    startTestimonialRotation();
-    initComplianceCountdown();
-  });
-} else {
-  drawRecoveryChart();
-  registerDashboardActions();
-  startTestimonialRotation();
-  initComplianceCountdown();
-}
-
-window.addEventListener('resize', drawRecoveryChart);
-
-function registerDashboardActions() {
-  const sendMoneyBtn = document.getElementById('send-money-btn');
-  const addCardBtn = document.getElementById('add-card-btn');
-  const exchangeBtn = document.getElementById('exchange-btn');
-
-  if (sendMoneyBtn) {
-    sendMoneyBtn.addEventListener('click', () => {
-      window.location.href = 'send-money.html';
-    });
-  }
-
-  if (addCardBtn) {
-    addCardBtn.addEventListener('click', () => {
-      window.location.href = 'add-card.html';
-    });
-  }
-
-  if (exchangeBtn) {
-    exchangeBtn.addEventListener('click', () => {
-      window.location.href = 'exchange.html';
-    });
-  }
-
-  const withdrawBtn = document.getElementById('withdraw-btn');
-  if (withdrawBtn) {
-    withdrawBtn.addEventListener('click', () => {
-      window.location.href = 'withdraw.html';
-    });
-  }
-
-  const telegramUrl = 'https://t.me/michealcarter';
-  const chatNowBtn = document.getElementById('chat-now-btn');
-  const agentChatBtn = document.getElementById('agent-chat-btn');
-
-  const openTelegramChat = () => {
-    window.open(telegramUrl, '_blank');
-  };
-
-  if (chatNowBtn) {
-    chatNowBtn.addEventListener('click', openTelegramChat);
-  }
-
-  if (agentChatBtn) {
-    agentChatBtn.addEventListener('click', openTelegramChat);
-  }
-}
+    activeTestimonial = (
