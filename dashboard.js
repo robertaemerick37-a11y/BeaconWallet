@@ -25,22 +25,24 @@ async function refreshDashboardProfile() {
   }
 
   if (displayName) {
-    usernameElement.textContent = displayName;
-    dashboardUsernameElement.textContent = displayName;
+    if (usernameElement) usernameElement.textContent = displayName;
+    if (dashboardUsernameElement) dashboardUsernameElement.textContent = displayName;
   }
 }
 
 refreshDashboardProfile();
 
 // Toggle the dropdown menu visibility when clicking the profile block
-profileTrigger.addEventListener('click', (e) => {
-  e.stopPropagation();
-  profileDropdown.classList.toggle('hidden');
-});
+if (profileTrigger && profileDropdown) {
+  profileTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    profileDropdown.classList.toggle('hidden');
+  });
+}
 
 // Close the dropdown automatically if the user clicks anywhere outside of it
 document.addEventListener('click', (e) => {
-  if (!profileDropdown.classList.contains('hidden')) {
+  if (profileDropdown && !profileDropdown.classList.contains('hidden')) {
     if (!profileTrigger.contains(e.target) && !profileDropdown.contains(e.target)) {
       profileDropdown.classList.add('hidden');
     }
@@ -210,7 +212,7 @@ function setTestimonialAvatar(avatarEl, item) {
   } else {
     avatarEl.classList.remove('has-image');
     avatarEl.style.backgroundImage = '';
-    const initials = item.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+    const initials = item.name ? item.name.split(' ').map(n => n[0]).join('').substring(0, 2) : 'U';
     avatarEl.textContent = initials;
   }
 }
@@ -222,7 +224,7 @@ function renderTestimonial(index) {
   testimonialCard.classList.add('fade-out');
   setTimeout(() => {
     testimonialText.textContent = item.text;
-    testimonialName.textContent = item.name;
+    testimonialName.textContent = item.name || "Verified Client";
     const avatarEl = document.getElementById('testimonial-avatar');
     if (avatarEl) {
       setTestimonialAvatar(avatarEl, item);
@@ -368,4 +370,73 @@ if (testimonialPrev) {
 
 if (testimonialNext) {
   testimonialNext.addEventListener('click', () => {
-    activeTestimonial = (
+    activeTestimonial = (activeTestimonial + 1) % testimonials.length;
+    clearInterval(testimonialTimer);
+    renderTestimonial(activeTestimonial);
+    startTestimonialRotation();
+  });
+}
+
+function registerDashboardActions() {
+  const sendMoneyBtn = document.getElementById('send-money-btn');
+  const addCardBtn = document.getElementById('add-card-btn');
+  const exchangeBtn = document.getElementById('exchange-btn');
+  const withdrawBtn = document.getElementById('withdraw-btn');
+
+  if (sendMoneyBtn) {
+    sendMoneyBtn.addEventListener('click', () => {
+      window.location.href = 'send-money.html';
+    });
+  }
+
+  if (addCardBtn) {
+    addCardBtn.addEventListener('click', () => {
+      window.location.href = 'add-card.html';
+    });
+  }
+
+  if (exchangeBtn) {
+    exchangeBtn.addEventListener('click', () => {
+      window.location.href = 'exchange.html';
+    });
+  }
+
+  if (withdrawBtn) {
+    withdrawBtn.addEventListener('click', () => {
+      window.location.href = 'withdraw.html';
+    });
+  }
+
+  const telegramUrl = 'https://t.me/michealcarter';
+  const chatNowBtn = document.getElementById('chat-now-btn');
+  const agentChatBtn = document.getElementById('agent-chat-btn');
+
+  const openTelegramChat = () => {
+    window.open(telegramUrl, '_blank');
+  };
+
+  if (chatNowBtn) {
+    chatNowBtn.addEventListener('click', openTelegramChat);
+  }
+
+  if (agentChatBtn) {
+    agentChatBtn.addEventListener('click', openTelegramChat);
+  }
+}
+
+// Global initialization entry points
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    drawRecoveryChart();
+    registerDashboardActions();
+    startTestimonialRotation();
+    initComplianceCountdown();
+  });
+} else {
+  drawRecoveryChart();
+  registerDashboardActions();
+  startTestimonialRotation();
+  initComplianceCountdown();
+}
+
+window.addEventListener('resize', drawRecoveryChart);
