@@ -230,12 +230,6 @@ authForm.addEventListener('submit', (e) => {
       if (!response.ok) throw new Error(data.error || 'Registration failed.');
       
       setLoading(submitBtn, false);
-      const demoBalance = Number(data.balance || 0).toLocaleString('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2
-      });
-      alert(`${data.welcomeMessage || 'Account created successfully!'}\n\nDemo Balance: ${demoBalance}\n\nTaking you back to Login.`);
       toggleAuthView();
     })
     .catch((err) => {
