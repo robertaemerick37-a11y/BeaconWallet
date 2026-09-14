@@ -603,6 +603,47 @@ hr {
   color: var(--text-primary);
 }
 
+.country-flag {
+  display: inline-block;
+  width: 22px;
+  height: 15px;
+  margin-left: 5px;
+  vertical-align: -2px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.flag-us {
+  background: linear-gradient(to bottom, #b22234 0 14%, #fff 14% 28%, #b22234 28% 42%, #fff 42% 56%, #b22234 56% 70%, #fff 70% 84%, #b22234 84% 100%);
+  position: relative;
+}
+
+.flag-us::before {
+  background: #3c3b6e;
+  content: '';
+  height: 56%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 43%;
+}
+
+.flag-ca {
+  background: linear-gradient(to right, #d52b1e 0 25%, #fff 25% 75%, #d52b1e 75% 100%);
+  position: relative;
+}
+
+.flag-ca::before {
+  color: #d52b1e;
+  content: '◆';
+  font-size: 9px;
+  left: 7px;
+  line-height: 13px;
+  position: absolute;
+  top: 0;
+}
+
 .testimonial-text {
   font-size: 14px;
   color: var(--text-secondary);

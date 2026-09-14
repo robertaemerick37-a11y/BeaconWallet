@@ -205,10 +205,10 @@ const testimonialCard = document.getElementById('testimonial-card');
 const testimonialDots = document.getElementById('testimonial-dots');
 
 const testimonials = [
-  { text: "I was so glad I decided to go with Beacon Wealth. From our very first meeting, they handled my case with absolute professionalism and care. They took the time to explain every detail, taking a massive weight off my shoulders. I couldn’t have asked for a better team to guide me through the process.", name: "Amina R.", flag: "🇺🇸", image: "amina.jpg" },
-  { text: "Choosing Beacon Wealth was the best decision I could have made. They handled my case incredibly well, showing a level of dedication and sharp attention to detail that you don't find just anywhere. I’m honestly just glad I had them in my corner when it mattered most.", name: "Jason L.", flag: "🇨🇦", image: "jason.jpg" },
-  { text: "Navigating financial decisions can be incredibly overwhelming, but Beacon Wealth made it seamless. They handled my case so well, keeping me informed and reassured at every single step. I’m incredibly grateful for their expertise and highly recommend them to anyone looking for peace of mind", name: "Nina K.", flag: "🇺🇸", image: "nina.jpg" },
-  { text: "The team at Beacon Wealth completely exceeded my expectations. They took over my case and handled everything flawlessly, allowing me to focus on my day-to-day without the stress. If you want a team that genuinely knows what they're doing and treats your case with priority, this is it", name: "Marcus D.", flag: "🇨🇦", image: "marcus.jpg" }
+  { text: "I was so glad I decided to go with Beacon Wealth. From our very first meeting, they handled my case with absolute professionalism and care. They took the time to explain every detail, taking a massive weight off my shoulders. I couldn’t have asked for a better team to guide me through the process.", name: "Amina R.", flag: "us", image: "amina.jpg" },
+  { text: "Choosing Beacon Wealth was the best decision I could have made. They handled my case incredibly well, showing a level of dedication and sharp attention to detail that you don't find just anywhere. I’m honestly just glad I had them in my corner when it mattered most.", name: "Jason L.", flag: "ca", image: "jason.jpg" },
+  { text: "Navigating financial decisions can be incredibly overwhelming, but Beacon Wealth made it seamless. They handled my case so well, keeping me informed and reassured at every single step. I’m incredibly grateful for their expertise and highly recommend them to anyone looking for peace of mind", name: "Nina K.", flag: "us", image: "nina.jpg" },
+  { text: "The team at Beacon Wealth completely exceeded my expectations. They took over my case and handled everything flawlessly, allowing me to focus on my day-to-day without the stress. If you want a team that genuinely knows what they're doing and treats your case with priority, this is it", name: "Marcus D.", flag: "ca", image: "marcus.jpg" }
 ];
 
 let activeTestimonial = 0;
@@ -237,7 +237,11 @@ function renderTestimonial(index) {
   testimonialCard.classList.add('fade-out');
   setTimeout(() => {
     testimonialText.textContent = item.text;
-    testimonialName.textContent = item.name ? `${item.name} ${item.flag || ''}`.trim() : "Verified Client";
+    if (item.name) {
+      testimonialName.innerHTML = `${item.name} <span class="country-flag flag-${item.flag}" role="img" aria-label="${item.flag === 'us' ? 'United States' : 'Canada'}"></span>`;
+    } else {
+      testimonialName.textContent = "Verified Client";
+    }
     const avatarEl = document.getElementById('testimonial-avatar');
     if (avatarEl) {
       setTestimonialAvatar(avatarEl, item);

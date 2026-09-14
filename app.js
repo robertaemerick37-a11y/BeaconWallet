@@ -51,25 +51,25 @@ const testimonials = [
   {
     text: "Beacon Wealth made moving money simple and secure. I love the fast transfers and easy UI – it feels made for real people.",
     name: "Amina R.",
-    flag: "🇺🇸",
+    flag: "us",
     role: "Small Business Owner"
   },
   {
     text: "The app is clean, modern, and reliable. I can send money instantly and the support team is always responsive.",
     name: "Jason L.",
-    flag: "🇨🇦",
+    flag: "ca",
     role: "Freelancer"
   },
   {
     text: "I started using Beacon Wealth to pay contractors, and the whole process is smooth. The dashboard is clear and everything works flawlessly.",
     name: "Nina K.",
-    flag: "🇺🇸",
+    flag: "us",
     role: "Project Manager"
   },
   {
     text: "I feel confident managing my finances with Beacon Wealth. The login flow is easy and the app always keeps my data safe.",
     name: "Marcus D.",
-    flag: "🇨🇦",
+    flag: "ca",
     role: "Consultant"
   }
 ];
@@ -84,7 +84,7 @@ function renderTestimonial(index) {
   testimonialCard.classList.add('fade-out');
   setTimeout(() => {
     testimonialText.textContent = item.text;
-    testimonialName.textContent = `${item.name} ${item.flag}`;
+    testimonialName.innerHTML = `${item.name} <span class="country-flag flag-${item.flag}" role="img" aria-label="${item.flag === 'us' ? 'United States' : 'Canada'}"></span>`;
     testimonialRole.textContent = item.role;
     testimonialCard.classList.remove('fade-out');
     updateDots(index);
