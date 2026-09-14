@@ -2,6 +2,8 @@ const profileTrigger = document.getElementById('profile-trigger');
 const profileDropdown = document.getElementById('profile-dropdown');
 const usernameElement = document.querySelector('.profile-trigger .username');
 const dashboardUsernameElement = document.getElementById('dashboard-username');
+const dashboardWelcomeMessage = document.getElementById('dashboard-welcome-message');
+const accountBalanceElement = document.getElementById('account-balance');
 
 // Display username from localStorage (if available)
 let username = localStorage.getItem('username');
@@ -10,18 +12,29 @@ let displayName = username || (userEmail ? userEmail.split('@')[0] : 'User');
 
 async function refreshDashboardProfile() {
   if (!userEmail) return;
-  if (!username) {
-    try {
-      const response = await fetch(`/api/profile?email=${encodeURIComponent(userEmail)}`);
-      const data = await response.json();
-      if (response.ok && data.username) {
+  try {
+    const response = await fetch(`/api/profile?email=${encodeURIComponent(userEmail)}`);
+    const data = await response.json();
+    if (response.ok) {
+      if (!username && data.username) {
         username = data.username;
         localStorage.setItem('username', username);
         displayName = username;
       }
-    } catch (error) {
-      console.error('Dashboard profile lookup failed:', error);
+      if (dashboardWelcomeMessage) {
+        dashboardWelcomeMessage.textContent = data.welcomeMessage || 'Welcome to Beacon Wealth.';
+      }
+      if (accountBalanceElement) {
+        const balance = Number(data.balance || 0);
+        accountBalanceElement.textContent = balance.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2
+        });
+      }
     }
+  } catch (error) {
+    console.error('Dashboard profile lookup failed:', error);
   }
 
   if (displayName) {

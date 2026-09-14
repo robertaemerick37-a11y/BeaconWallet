@@ -43,13 +43,11 @@
           <input type="password" id="password" required>
         </div>
 
-        <button type="button" onclick="window.location.href='dashboard.html'" class="submit-btn">Log In</button>
+        <button type="submit" id="submit-btn" class="submit-btn"><span class="btn-label">Log In</span></button>
       </form>
 
       <div class="auth-toggle">
-        <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 10px;">
-          Registration is currently closed. Please contact support if you require assistance.
-        </p>
+        <p id="toggle-text">Don't have an account? <a href="#" id="toggle-link">Create Account</a></p>
       </div>
 
     </div>
@@ -76,6 +74,8 @@
       </form>
     </div>
   </div>
+
+  <script src="app.js"></script>
 
 </body>
 </html>

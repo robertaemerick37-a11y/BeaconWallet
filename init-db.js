@@ -1,41 +1,37 @@
-const sqlite3 = require('sqlite3').verbose();
+require('dotenv').config();
+const { Pool } = require('pg');
 
-// This creates a physical file named "database.sqlite" in your folder
-const db = new sqlite3.Database('./database.sqlite', (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to the SQLite database.');
-  }
-});
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL is required.');
+  process.exitCode = 1;
+} else {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+  });
 
-// Create our tables
-db.serialize(() => {
-  // 1. The Users Table
-  db.run(`
+  pool.query(`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL
-    )
-  `, (err) => {
-    if (err) console.error('Error creating users table:', err.message);
-    else console.log('Users table ready.');
-  });
-
-  // 2. The Temporary 2FA Verification Codes Table
-  db.run(`
+      id BIGSERIAL PRIMARY KEY,
+      username VARCHAR(80) UNIQUE NOT NULL,
+      email VARCHAR(254) UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      welcome_message TEXT NOT NULL DEFAULT 'Welcome to Beacon Wealth. Your account is ready to explore.',
+      balance NUMERIC(18, 2) NOT NULL DEFAULT 0
+    );
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_message TEXT NOT NULL DEFAULT 'Welcome to Beacon Wealth. Your account is ready to explore.';
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS balance NUMERIC(18, 2) NOT NULL DEFAULT 0;
     CREATE TABLE IF NOT EXISTS verification_codes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT NOT NULL,
-      code TEXT NOT NULL,
-      expires_at DATETIME NOT NULL
-    )
-  `, (err) => {
-    if (err) console.error('Error creating codes table:', err.message);
-    else console.log('Verification codes table ready.');
-  });
-});
-
-db.close();
+      id BIGSERIAL PRIMARY KEY,
+      email VARCHAR(254) NOT NULL,
+      code VARCHAR(10) NOT NULL,
+      expires_at TIMESTAMPTZ NOT NULL
+    );
+  `)
+    .then(() => console.log('Postgres tables ready.'))
+    .catch((error) => {
+      console.error('Database initialization failed:', error.message);
+      process.exitCode = 1;
+    })
+    .finally(() => pool.end());
+}

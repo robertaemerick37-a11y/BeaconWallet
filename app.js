@@ -226,7 +226,12 @@ authForm.addEventListener('submit', (e) => {
       if (!response.ok) throw new Error(data.error || 'Registration failed.');
       
       setLoading(submitBtn, false);
-      alert('Account created successfully! Taking you back to Login.');
+      const demoBalance = Number(data.balance || 0).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2
+      });
+      alert(`${data.welcomeMessage || 'Account created successfully!'}\n\nDemo Balance: ${demoBalance}\n\nTaking you back to Login.`);
       toggleAuthView();
     })
     .catch((err) => {
@@ -251,7 +256,6 @@ authForm.addEventListener('submit', (e) => {
       
       localStorage.setItem('userEmail', data.email);
       localStorage.setItem('username', data.username || usernameInput.value);
-      localStorage.setItem('userPassword', passwordInput.value);
       window.location.href = 'verify.html';
     })
     .catch((err) => {

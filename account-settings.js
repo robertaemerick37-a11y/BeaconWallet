@@ -6,7 +6,6 @@ const usernameElement = document.querySelector('.profile-trigger .username');
 // Display username from localStorage
 let username = localStorage.getItem('username');
 const userEmail = localStorage.getItem('userEmail');
-const userPassword = localStorage.getItem('userPassword');
 let displayName = username || (userEmail ? userEmail.split('@')[0] : 'User');
 
 async function refreshProfileIfNeeded() {
@@ -55,16 +54,16 @@ document.addEventListener('click', (e) => {
 const togglePasswordBtn = document.getElementById('toggle-password-btn');
 const displayPassword = document.getElementById('display-password');
 
-displayPassword.value = userPassword || '********';
+displayPassword.value = '********';
 
 togglePasswordBtn.addEventListener('click', () => {
   if (displayPassword.type === 'password') {
     displayPassword.type = 'text';
-    displayPassword.value = userPassword || '********';
+    displayPassword.value = 'Password is securely stored';
     togglePasswordBtn.textContent = 'Hide';
   } else {
     displayPassword.type = 'password';
-    displayPassword.value = userPassword ? userPassword : '********';
+    displayPassword.value = '********';
     togglePasswordBtn.textContent = 'Show';
   }
 });
