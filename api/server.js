@@ -39,7 +39,7 @@ function createWelcomeMessage(username) {
 }
 
 function createDemoBalance() {
-  return 500000000;
+  return randomInt(300000000, 500000001);
 }
 
 async function createUniqueWelcomeMessage(username) {
