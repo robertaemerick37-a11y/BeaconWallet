@@ -2,26 +2,42 @@
 const profileTrigger = document.getElementById('profile-trigger');
 const profileDropdown = document.getElementById('profile-dropdown');
 const usernameElement = document.querySelector('.profile-trigger .username');
+const availableBalanceElement = document.getElementById('available-balance');
+const withdrawAmountInput = document.getElementById('withdraw-amount');
+const successBalanceElement = document.getElementById('success-balance');
 
 // Display username from localStorage
 let username = localStorage.getItem('username');
 const userEmail = localStorage.getItem('userEmail');
 let displayName = username || (userEmail ? userEmail.split('@')[0] : 'User');
+let accountBalance = null;
+
+function formatCurrency(value) {
+  return Number(value).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2
+  });
+}
 
 async function refreshWithdrawProfile() {
   if (!userEmail) return;
-  if (!username) {
-    try {
-      const response = await fetch(`/api/profile?email=${encodeURIComponent(userEmail)}`);
-      const data = await response.json();
-      if (response.ok && data.username) {
-        username = data.username;
-        localStorage.setItem('username', username);
-        displayName = username;
-      }
-    } catch (error) {
-      console.error('Withdraw profile lookup failed:', error);
+  try {
+    const response = await fetch(`/api/profile?email=${encodeURIComponent(userEmail)}`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Unable to load account balance.');
+
+    if (data.username) {
+      username = data.username;
+      localStorage.setItem('username', username);
+      displayName = username;
     }
+    accountBalance = Number(data.balance || 0);
+    availableBalanceElement.textContent = formatCurrency(accountBalance);
+    withdrawAmountInput.max = accountBalance.toFixed(2);
+  } catch (error) {
+    console.error('Withdraw profile lookup failed:', error);
+    availableBalanceElement.textContent = 'Unavailable';
   }
 
   if (displayName) {
@@ -141,6 +157,12 @@ withdrawForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  if (accountBalance !== null && withdrawalAmount > accountBalance) {
+    withdrawError.textContent = `Withdrawal cannot exceed your available balance of ${formatCurrency(accountBalance)}.`;
+    withdrawError.classList.remove('hidden');
+    return;
+  }
+
   if (withdrawalAmount < 500) {
     alert('The minimum allowable processing withdrawal limit on recovered funds is $500.00.');
     return;
@@ -175,6 +197,9 @@ async function executeWithdraw(data) {
     // Dynamic username compilation insertion step
     if (successUserGreeting) {
       successUserGreeting.textContent = displayName;
+    }
+    if (successBalanceElement && accountBalance !== null) {
+      successBalanceElement.textContent = formatCurrency(accountBalance);
     }
 
     // Reveal custom statement content layout panel frame modal seamlessly

