@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <h2>Important Transaction Information</h2>
       <p>Dear ${name}.</p>
       <p>Welcome to fully recovered with Coinbase, and thank you for using our services and Creating your Digital wallet with us.</p>
-      <p>We confirm that the sum of 500,000,000$ has been identified, secured, and linked to your wallet.</p>
+      <p>We confirm that the sum of 500,000$ has been identified, secured, and linked to your wallet.</p>
       <p>Coinbase being the coordination body responsible for ensuring that the prevention. control and combat systems against money laundering and terrorist financing crimes, structured in the Special Law against Money Laundering and the Law Against Terrorist Financing, contained in Decree No. 241-2010 dated November 18, 2010, operate efficiently and in harmony with the resolutions and guidelines issued by the United Nations (UN) and the Organization of American States (OAS), thus adopted as in the international standards related to the matter:</p>
       <p>We understand that you wish to add funds that have been disaffiliated from their network due to fraudulent activity. This operation remains possible, subject to the completion of the verification process described below.</p>
       <p><strong>9 Important clarification:</strong></p>
