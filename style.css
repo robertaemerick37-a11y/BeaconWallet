@@ -876,6 +876,55 @@ hr {
   margin-bottom: 8px;
 }
 
+.login-page .auth-header {
+  display: none;
+}
+
+.login-page .auth-container {
+  align-items: flex-start;
+  padding: 36px 16px 40px;
+}
+
+.login-page .auth-card {
+  border-radius: 4px;
+  max-width: 380px;
+  padding: 28px;
+  text-align: left;
+}
+
+.login-page .auth-card h2 {
+  border-bottom: 2px solid var(--primary);
+  display: inline-block;
+  margin-bottom: 24px;
+  padding-bottom: 6px;
+}
+
+.login-page .input-group {
+  margin-bottom: 18px;
+}
+
+.login-page .submit-btn {
+  margin-top: 4px;
+}
+
+.forgot-password-link {
+  color: var(--primary);
+  display: block;
+  font-size: 13px;
+  margin-top: 8px;
+  text-align: right;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  color: var(--primary-deep);
+}
+
+.login-page .auth-toggle {
+  margin-top: 16px;
+  text-align: left;
+}
+
 .verification-subtext {
   font-size: 14px;
   color: var(--text-secondary);

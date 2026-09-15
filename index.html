@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>💳</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-body">
+<body class="auth-body login-page">
 
   <header class="main-header auth-header">
     <div class="header-inner">
@@ -36,11 +36,9 @@
         </div>
 
         <div class="input-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label for="password" style="margin-bottom: 0;">Password</label>
-            <a href="#" id="forgot-password-link" style="font-size: 13px; color: var(--primary); text-decoration: none;">Forgot Password?</a>
-          </div>
+          <label for="password">Password</label>
           <input type="password" id="password" required>
+          <a href="#" id="forgot-password-link" class="forgot-password-link">Forgot Password?</a>
         </div>
 
         <div class="input-group hidden" id="confirm-password-group">

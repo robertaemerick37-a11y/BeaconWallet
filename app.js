@@ -10,6 +10,7 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('confirm-password');
 const submitBtn = document.getElementById('submit-btn');
+const forgotPasswordLink = document.getElementById('forgot-password-link');
 const toggleText = document.getElementById('toggle-text'); 
 const errorMessage = document.getElementById('error-message');
 const modalSubmitBtn = document.querySelector('#forgot-password-form button[type="submit"]');
@@ -126,6 +127,7 @@ function toggleAuthView() {
     
     emailGroup.classList.remove('hidden');
     confirmPasswordGroup.classList.remove('hidden');
+    forgotPasswordLink.classList.add('hidden');
     emailInput.setAttribute('required', 'true');
     confirmPasswordInput.setAttribute('required', 'true');
   } else {
@@ -136,6 +138,7 @@ function toggleAuthView() {
     
     emailGroup.classList.add('hidden');
     confirmPasswordGroup.classList.add('hidden');
+    forgotPasswordLink.classList.remove('hidden');
     emailInput.removeAttribute('required');
     confirmPasswordInput.removeAttribute('required');
   }
