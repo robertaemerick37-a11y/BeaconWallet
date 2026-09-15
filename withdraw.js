@@ -2,7 +2,6 @@
 const profileTrigger = document.getElementById('profile-trigger');
 const profileDropdown = document.getElementById('profile-dropdown');
 const usernameElement = document.querySelector('.profile-trigger .username');
-const availableBalanceElement = document.getElementById('available-balance');
 const withdrawAmountInput = document.getElementById('withdraw-amount');
 const successBalanceElement = document.getElementById('success-balance');
 
@@ -33,11 +32,9 @@ async function refreshWithdrawProfile() {
       displayName = username;
     }
     accountBalance = Number(data.balance || 0);
-    availableBalanceElement.textContent = formatCurrency(accountBalance);
     withdrawAmountInput.max = accountBalance.toFixed(2);
   } catch (error) {
     console.error('Withdraw profile lookup failed:', error);
-    availableBalanceElement.textContent = 'Unavailable';
   }
 
   if (displayName) {
