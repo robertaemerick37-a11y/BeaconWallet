@@ -876,10 +876,6 @@ hr {
   margin-bottom: 8px;
 }
 
-.login-page .auth-header {
-  display: none;
-}
-
 .login-page .auth-container {
   align-items: flex-start;
   padding: 36px 16px 40px;
