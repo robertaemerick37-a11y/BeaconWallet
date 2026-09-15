@@ -32,7 +32,10 @@ function renderUsers(users) {
       <td>${escapeHtml(user.username)}</td>
       <td>${escapeHtml(user.email)}</td>
       <td>Stored securely (hashed)</td>
-      <td><button type="button" class="delete-btn" data-user-id="${user.id}">Delete</button></td>
+      <td>
+        <button type="button" class="restriction-btn" data-user-id="${user.id}" data-user-email="${escapeHtml(user.email)}" data-restricted="${user.is_restricted}">${user.is_restricted ? 'Restore access' : 'Restrict access'}</button>
+        <button type="button" class="delete-btn" data-user-id="${user.id}">Delete</button>
+      </td>
     `;
     usersBody.appendChild(row);
   });
@@ -67,6 +70,36 @@ adminKeyInput.addEventListener('keydown', (event) => {
 });
 
 usersBody.addEventListener('click', async (event) => {
+  const restrictionButton = event.target.closest('.restriction-btn');
+  if (restrictionButton) {
+    const currentlyRestricted = restrictionButton.dataset.restricted === 'true';
+    const action = currentlyRestricted ? 'restore access for' : 'restrict access for';
+    if (!window.confirm(`Are you sure you want to ${action} this user?`)) return;
+
+    clearMessage();
+    restrictionButton.disabled = true;
+    try {
+      const response = await fetch(`/api/admin/users/${restrictionButton.dataset.userId}/restriction`, {
+        method: 'PATCH',
+        headers: { ...adminHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ restricted: !currentlyRestricted })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Unable to update user access.');
+      if (!currentlyRestricted) {
+        localStorage.setItem('beacon-account-restricted', JSON.stringify({
+          email: restrictionButton.dataset.userEmail,
+          timestamp: Date.now()
+        }));
+      }
+      await loadUsers();
+    } catch (error) {
+      restrictionButton.disabled = false;
+      showMessage(error.message);
+    }
+    return;
+  }
+
   const button = event.target.closest('.delete-btn');
   if (!button) return;
   if (!window.confirm('Delete this user permanently?')) return;

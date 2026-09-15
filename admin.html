@@ -6,41 +6,47 @@
   <title>Admin Users - Beacon Wealth</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    body.admin-body { background: #0b111e; color: var(--text-primary); }
+    body.admin-body { background: #000; color: #111; }
     .admin-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 100vh; }
-    .admin-sidebar { background: #111a2b; color: #dbeafe; padding: 28px 18px; border-right: 1px solid rgba(148, 163, 184, 0.16); }
+    .admin-sidebar { background: #050505; color: #fff; padding: 28px 18px; border-right: 1px solid #2b2b2b; }
     .admin-brand { font-size: 19px; font-weight: 700; letter-spacing: 0; padding: 0 12px 38px; }
-    .admin-brand span { color: #60a5fa; }
-    .admin-nav-label { color: #64748b; font-size: 10px; font-weight: 700; letter-spacing: 1.4px; margin: 0 12px 10px; text-transform: uppercase; }
-    .admin-nav-item { color: #cbd5e1; display: block; padding: 11px 12px; text-decoration: none; border-left: 3px solid transparent; font-size: 14px; }
-    .admin-nav-item.active, .admin-nav-item:hover { background: rgba(59, 130, 246, 0.14); border-left-color: #60a5fa; color: #fff; }
-    .admin-sidebar-note { border-top: 1px solid rgba(148, 163, 184, 0.16); color: #94a3b8; font-size: 12px; line-height: 1.5; margin: 36px 12px 0; padding-top: 18px; }
+    .admin-brand span { color: #fff; }
+    .admin-nav-label { color: #888; font-size: 10px; font-weight: 700; letter-spacing: 1.4px; margin: 0 12px 10px; text-transform: uppercase; }
+    .admin-nav-item { color: #ccc; display: block; padding: 11px 12px; text-decoration: none; border-left: 3px solid transparent; font-size: 14px; }
+    .admin-nav-item.active, .admin-nav-item:hover { background: #222; border-left-color: #fff; color: #fff; }
+    .admin-sidebar-note { border-top: 1px solid #2b2b2b; color: #999; font-size: 12px; line-height: 1.5; margin: 36px 12px 0; padding-top: 18px; }
     .admin-main { min-width: 0; padding: 30px clamp(20px, 4vw, 58px) 54px; }
     .admin-topbar { align-items: center; display: flex; justify-content: space-between; margin-bottom: 48px; }
-    .admin-kicker { color: #60a5fa; font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; }
-    .admin-topbar a { color: #cbd5e1; font-size: 13px; text-decoration: none; }
+    .admin-kicker { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; }
+    .admin-topbar a { color: #ccc; font-size: 13px; text-decoration: none; }
     .admin-topbar a:hover { color: #fff; }
     .admin-heading { color: #fff; font-size: clamp(28px, 4vw, 42px); font-weight: 650; letter-spacing: 0; margin: 9px 0 8px; }
-    .admin-subheading { color: #94a3b8; font-size: 14px; margin: 0; }
+    .admin-subheading { color: #aaa; font-size: 14px; margin: 0; }
     .admin-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 28px; max-width: 500px; }
-    .admin-metric { background: #172235; border: 1px solid rgba(148, 163, 184, 0.16); padding: 17px 20px; }
-    .admin-metric-label { color: #94a3b8; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+    .admin-metric { background: #111; border: 1px solid #2b2b2b; padding: 17px 20px; }
+    .admin-metric-label { color: #aaa; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
     .admin-metric-value { color: #fff; font-size: 27px; font-weight: 700; margin-top: 7px; }
     .admin-workspace { background: #fff; border-radius: 10px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2); padding: clamp(20px, 3vw, 32px); }
+    .admin-workspace input:focus { border-color: #111; box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1); }
     .admin-toolbar { align-items: end; border-bottom: 1px solid var(--border); display: flex; gap: 14px; margin: 0 0 20px; padding-bottom: 22px; }
     .admin-toolbar .form-group { flex: 1; margin: 0; }
-    .admin-toolbar .submit-btn { margin: 0; max-width: 150px; }
+    .admin-toolbar .submit-btn { background: #111; border-radius: 5px; margin: 0; max-width: 150px; }
+    .admin-toolbar .submit-btn:hover { background: #333; }
     .admin-table-wrap { overflow-x: auto; }
     .admin-table { border-collapse: collapse; text-align: left; width: 100%; }
     .admin-table th, .admin-table td { border-bottom: 1px solid var(--border); padding: 15px 12px; white-space: nowrap; }
     .admin-table th { color: var(--text-secondary); font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; }
     .admin-table td { color: var(--text-primary); font-size: 14px; }
-    .admin-table .delete-btn { background: #fff1f2; border: 1px solid #fecdd3; border-radius: 5px; color: #be123c; cursor: pointer; padding: 8px 12px; }
-    .admin-table .delete-btn:hover { background: #ffe4e6; }
+    .admin-table .restriction-btn { background: #111; border: 1px solid #111; border-radius: 5px; color: #fff; cursor: pointer; margin-right: 6px; padding: 8px 12px; }
+    .admin-table .restriction-btn:hover { background: #333; }
+    .admin-table .restriction-btn[data-restricted="true"] { background: #fff; color: #111; }
+    .admin-table .restriction-btn[data-restricted="true"]:hover { background: #e5e5e5; }
+    .admin-table .delete-btn { background: #d1d1d1; border: 1px solid #999; border-radius: 5px; color: #111; cursor: pointer; padding: 8px 12px; }
+    .admin-table .delete-btn:hover { background: #b8b8b8; }
     .admin-message { margin: 12px 0; }
     @media (max-width: 720px) {
       .admin-shell { display: block; }
-      .admin-sidebar { border-bottom: 1px solid rgba(148, 163, 184, 0.16); border-right: 0; padding: 18px; }
+      .admin-sidebar { border-bottom: 1px solid #2b2b2b; border-right: 0; padding: 18px; }
       .admin-brand { padding: 0 0 16px; }
       .admin-nav-label, .admin-sidebar-note { display: none; }
       .admin-nav-item { display: inline-block; margin-right: 6px; padding: 8px 10px; }

@@ -158,6 +158,7 @@ app.post('/api/login', async (req, res) => {
     const user = result.rows[0];
 
     if (!user) return res.status(400).json({ error: 'Invalid username/email or password.' });
+    if (user.is_restricted) return res.status(403).json({ error: 'This account has been placed on hold. Please contact support.' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: 'Invalid username/email or password.' });
@@ -211,6 +212,11 @@ app.post('/api/verify', async (req, res) => {
     if (!row) return res.status(400).json({ error: 'Invalid code.' });
     if (new Date() > new Date(row.expires_at)) return res.status(400).json({ error: 'Code expired.' });
 
+    const userResult = await pool.query('SELECT is_restricted FROM users WHERE email = $1', [email]);
+    if (userResult.rows[0]?.is_restricted) {
+      return res.status(403).json({ error: 'This account has been placed on hold. Please contact support.' });
+    }
+
     await pool.query(`DELETE FROM verification_codes WHERE email = $1`, [email]);
     return res.status(200).json({ message: 'Code verified successfully!' });
   } catch (err) {
@@ -227,11 +233,12 @@ app.get('/api/profile', async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT username, email, welcome_message, balance FROM users WHERE email = $1`,
+      `SELECT username, email, welcome_message, balance, is_restricted FROM users WHERE email = $1`,
       [email]
     );
     const user = result.rows[0];
     if (!user) return res.status(404).json({ error: 'Profile not found.' });
+    if (user.is_restricted) return res.status(403).json({ error: 'This account has been placed on hold. Please contact support.' });
     return res.status(200).json({
       username: user.username,
       email: user.email,
@@ -362,11 +369,37 @@ app.post('/api/reset-password', async (req, res) => {
 app.get('/api/admin/users', requireAdmin, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, username, email FROM users ORDER BY id DESC`
+      `SELECT id, username, email, is_restricted FROM users ORDER BY id DESC`
     );
     return res.status(200).json({ users: result.rows });
   } catch (err) {
     return res.status(500).json({ error: 'Unable to load users.' });
+  }
+});
+
+app.patch('/api/admin/users/:id/restriction', requireAdmin, async (req, res) => {
+  const userId = Number.parseInt(req.params.id, 10);
+  if (!Number.isInteger(userId) || userId < 1) {
+    return res.status(400).json({ error: 'Invalid user id.' });
+  }
+
+  const isRestricted = req.body?.restricted;
+  if (typeof isRestricted !== 'boolean') {
+    return res.status(400).json({ error: 'Restriction status must be true or false.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'UPDATE users SET is_restricted = $1 WHERE id = $2 RETURNING id, is_restricted',
+      [isRestricted, userId]
+    );
+    if (!result.rowCount) return res.status(404).json({ error: 'User not found.' });
+    return res.status(200).json({
+      message: isRestricted ? 'User access restricted.' : 'User access restored.',
+      user: result.rows[0]
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Unable to update user restriction.' });
   }
 });
 
